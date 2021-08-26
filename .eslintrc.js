@@ -4,8 +4,13 @@ module.exports = {
     node: true,
   },
   extends: ["airbnb-base", "prettier"],
-  parser: "esprima",
+  parser: "@typescript-eslint/parser",
+  parserOptions: {
+    sourceType: "module",
+    ecmaVersion: 2020,
+  },
   rules: {
     "no-console": "off",
+    strict: "off",
   },
 };
