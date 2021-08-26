@@ -11,6 +11,11 @@
   "bin": {
     "auto-eslint-cli": "./bin/index.js"
   },
+  "files": [
+    "bin",
+    "dist",
+    "types"
+  ],
   "devDependencies": {
     "@babel/core": "^7.15.0",
     "@babel/preset-env": "^7.15.0",
@@ -41,6 +46,7 @@
   "dependencies": {
     "chalk": "^4.1.2",
     "commander": "^8.1.0",
+    "inquirer": "^8.1.2",
     "ora": "^6.0.0"
   }
 }

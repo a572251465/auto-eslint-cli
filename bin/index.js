@@ -19,6 +19,7 @@ const run = () => {
     }
 
     // exec input
+    require("../dist/index")(cwd)
   } catch (e) {
     console.error(chalk.red(packageError));
   }
