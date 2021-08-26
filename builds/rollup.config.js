@@ -1,7 +1,7 @@
 const path = require("path");
 const { nodeResolve } = require("@rollup/plugin-node-resolve");
 const typescript = require("@rollup/plugin-typescript");
-const { babel } = require("@rollup/plugin-babel");
+const { getBabelOutputPlugin } = require("@rollup/plugin-babel");
 
 const resolvePath = (url) => path.resolve(__dirname, url);
 
@@ -13,7 +13,9 @@ module.exports = {
   },
   plugins: [
     nodeResolve(),
-    babel({ babelHelpers: "bundled" }),
+    getBabelOutputPlugin({
+      presets: ["@babel/preset-env"],
+    }),
     typescript({
       target: "esnext",
       include: ["src/**/*.ts", "types/**"],
