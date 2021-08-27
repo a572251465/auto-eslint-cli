@@ -5,10 +5,15 @@ const path = require("path");
 const fs = require("fs");
 
 const packageError = "Error: file package.json does not exist, init fail";
+const cwd = process.cwd();
+
+// eslint-disable-next-line consistent-return
+const promptHandle = async () => {
+  require("../dist/index")(cwd);
+};
 
 // eslint-disable-next-line consistent-return
 const run = () => {
-  const cwd = process.cwd();
   const packagePath = path.resolve(cwd, "package.json");
   let stat = null;
   try {
@@ -19,7 +24,7 @@ const run = () => {
     }
 
     // exec input
-    require("../dist/index")(cwd)
+    promptHandle();
   } catch (e) {
     console.error(chalk.red(packageError));
   }

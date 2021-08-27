@@ -6,7 +6,8 @@
   "scripts": {
     "lint": "eslint --ext .js,.ts . && prettier --check . && yarn lint:fix",
     "lint:fix": "eslint --fix --ext .ts,.js . && prettier --write .",
-    "build": "rollup -c ./builds/rollup.config.js"
+    "build:cjs": "rollup -c ./builds/rollup.config.js",
+    "build": "webpack --config ./builds/webpack.config.js"
   },
   "bin": {
     "auto-eslint-cli": "./bin/index.js"
@@ -18,15 +19,20 @@
   ],
   "devDependencies": {
     "@babel/core": "^7.15.0",
+    "@babel/plugin-transform-runtime": "^7.15.0",
     "@babel/preset-env": "^7.15.0",
     "@babel/preset-typescript": "^7.15.0",
     "@commitlint/cli": "^13.1.0",
     "@commitlint/config-angular": "^13.1.0",
     "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-commonjs": "^20.0.0",
+    "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.4",
     "@rollup/plugin-typescript": "^8.2.5",
+    "@types/inquirer": "^7.3.3",
     "@types/node": "^16.7.1",
     "@typescript-eslint/parser": "^4.29.3",
+    "babel-loader": "^8.2.2",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^8.3.0",
@@ -36,7 +42,10 @@
     "lint-staged": "^11.1.2",
     "prettier": "^2.3.2",
     "rollup": "^2.56.3",
-    "typescript": "^4.3.5"
+    "rollup-plugin-commonjs": "^10.1.0",
+    "typescript": "^4.3.5",
+    "webpack": "5.38.1",
+    "webpack-cli": "4.7.0"
   },
   "lint-staged": {
     "src/**/*.{js,ts}": [
@@ -47,6 +56,7 @@
     "chalk": "^4.1.2",
     "commander": "^8.1.0",
     "inquirer": "^8.1.2",
-    "ora": "^6.0.0"
+    "ora": "^6.0.0",
+    "prompts": "^2.4.1"
   }
 }
