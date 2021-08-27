@@ -1,40 +1,40 @@
-const prompts = require("prompts");
+const chalk = require("chalk");
+const { program } = require("commander");
+const path = require("path");
+const fs = require("fs");
 
-const presets = require("./shared/presets.ts").default;
-
-interface IPresets {
-  title: string;
-  value: string;
-}
+const packageError = "Error: file package.json does not exist, init fail";
+const cwd = process.cwd();
 
 // eslint-disable-next-line consistent-return
-const start = async (): Promise<any> => {
-  // 设置预设进行选择
-  const presetsList: IPresets[] = [];
-  Object.keys(presets).forEach((preset) => {
-    const { value } = presets[preset];
-    presetsList.push({ title: preset, value });
-  });
-  const presetPrompt = {
-    name: "preset",
-    type: "select",
-    message: "Please pick a preset:",
-    choices: presetsList,
-  };
-  const features: IPresets[] = ["npm", "yarn", "cancel"].map((item) => ({
-    title: item,
-    value: item,
-  }));
-  const featurePrompt = {
-    name: "tool",
-    type: "select",
-    message: "Please eslint init tool:",
-    choices: features,
-  };
-  const options = await prompts([presetPrompt, featurePrompt]);
-  if (options.tool === "cancel") {
-    return Promise.reject(new Error("init close"));
+const promptHandle = async () => {
+  require("./cli-prompt/index.ts")();
+};
+
+// eslint-disable-next-line consistent-return
+const run = () => {
+  const packagePath = path.resolve(cwd, "package.json");
+  let stat = null;
+  try {
+    stat = fs.statSync(packagePath);
+    if (!stat.isFile()) {
+      console.error(chalk.red(packageError));
+      return false;
+    }
+
+    // exec input
+    promptHandle();
+  } catch (e) {
+    console.error(chalk.red(packageError));
   }
 };
 
-module.exports = start;
+program
+  .option("-n --name", "please input config file name")
+  .command("init")
+  .description("eslint config init handle")
+  .action(() => {
+    run();
+  });
+
+program.parse(process.argv);
