@@ -1,6 +1,7 @@
 const prompts = require("prompts");
 
 const presets = require("../cli-shared/presets.ts").default;
+const cli = require("../cli/index.ts");
 
 interface IPresets {
   title: string;
@@ -35,6 +36,7 @@ const start = async (): Promise<any> => {
   if (options.tool === "cancel") {
     return Promise.reject(new Error("init close"));
   }
+  await cli(options);
 };
 
 module.exports = start;

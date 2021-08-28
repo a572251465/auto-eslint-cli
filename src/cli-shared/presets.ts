@@ -4,14 +4,14 @@ interface IPresets {
   prefix?: string;
 }
 interface IDefaultPresets {
-  [keyname: string]: {
+  [keyName: string]: {
     value: string;
     plugins: IPresets[];
   };
 }
 const defaultPresets: IDefaultPresets = {
   "vue3 + ts/ vue-cli": {
-    value: "vue3&ts/vue-cli",
+    value: "vue3&ts&vue-cli",
     plugins: [
       { plugin: "@commitlint/cli", version: "^13.1.0" },
       { plugin: "@commitlint/config-angular", version: "^13.1.0" },
@@ -34,8 +34,8 @@ const defaultPresets: IDefaultPresets = {
 Object.keys(defaultPresets).forEach((type: string) => {
   const { plugins } = defaultPresets[type];
   plugins.forEach((item) => {
-    const defail = item;
-    defail.prefix = item.version.includes(".")
+    const detail = item;
+    detail.prefix = item.version.includes(".")
       ? item.version.split(".")[0]
       : item.version;
   });
