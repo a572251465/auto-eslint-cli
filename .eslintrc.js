@@ -1,17 +1,17 @@
 module.exports = {
   root: true,
   env: {
-    node: true,
+    node: true
   },
-  extends: ["airbnb-base", "prettier"],
-  parser: "@typescript-eslint/parser",
+  extends: ['airbnb-base', 'prettier'],
+  parser: '@typescript-eslint/parser',
   parserOptions: {
-    sourceType: "module",
-    ecmaVersion: 2020,
+    sourceType: 'module',
+    ecmaVersion: 2020
   },
   rules: {
-    "no-console": "off",
-    "global-require": "off",
-    strict: "off",
-  },
-};
+    'no-console': 'off',
+    'global-require': 'off',
+    strict: 'off'
+  }
+}

@@ -1,4 +1,4 @@
-const cp = require("child_process");
+const cp = require('child_process')
 
 // 直接执行命令
 // eslint-disable-next-line arrow-body-style
@@ -9,24 +9,24 @@ const runCommand = (
 ): Promise<void> =>
   new Promise((resolve, reject) => {
     const executedCommand = cp.spawn(command, args, {
-      stdio: "inherit",
+      stdio: 'inherit',
       shell: true,
-      ...options,
-    });
+      ...options
+    })
 
     // fail
-    executedCommand.on("error", (error: string | undefined) => {
-      reject(new Error(error));
-    });
+    executedCommand.on('error', (error: string | undefined) => {
+      reject(new Error(error))
+    })
 
     // success
-    executedCommand.on("exit", (code: number) => {
+    executedCommand.on('exit', (code: number) => {
       if (code === 0) {
-        resolve();
+        resolve()
       } else {
-        reject(new Error(""));
+        reject(new Error(''))
       }
-    });
-  });
+    })
+  })
 
-export default runCommand;
+export default runCommand
