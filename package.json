@@ -52,6 +52,7 @@
   "dependencies": {
     "chalk": "^4.1.2",
     "commander": "^8.1.0",
+    "node-extra": "^2.0.2",
     "progress": "^2.0.3",
     "prompts": "^2.4.1"
   }

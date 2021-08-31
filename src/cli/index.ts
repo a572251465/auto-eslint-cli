@@ -1,118 +1,13 @@
 const pathCli = require('path')
-const fsCli = require('fs')
 const chalkCli = require('chalk')
+const { fs: fsUtils, process: processUtils } = require('node-extra')
 const defaultPresets = require('../cli-shared/presets.ts').default
-const { isDirExists, fileMove, isFileExists, assignPathWriteFile } =
-  require('../cli-shared/fileUtils.ts').default
-const runCommand = require('../cli-shared/runCommand.ts').default
+const huskyHandle = require('./core/husky.ts').default
+const eslintConfigHandle = require('./core/eslintConfigHandle.ts').default
 
 const transformPresets: { [keyName: string]: string } = {
   'vue3&ts&vue-cli': 'vue3 + ts/ vue-cli',
   'rollup&ts': 'rollup + ts'
-}
-
-interface IEslintConfigInit {
-  root: boolean
-  env: {
-    node: boolean
-  }
-  settings: {
-    [keyName: string]: any
-  }
-  extends: string[]
-  parser: string
-  parserOptions: {
-    parser: string
-  }
-  rules: {
-    [keyName: string]: string
-  }
-}
-type ITransform<T> = {
-  [P in keyof T]?: T[P] extends object ? ITransform<T[P]> : T[P]
-}
-type IEslintConfig = ITransform<IEslintConfigInit>
-
-/**
- * @author lihh
- * @description 进行eslint配置
- */
-const eslintConfigHandle = () => {
-  const cwd = process.cwd()
-  let oralEslintPath = null
-  const remarksName = ['.eslintrc.js', '.eslintrc.json']
-
-  const dirList = fsCli.readdirSync(cwd)
-  let i = 0
-  for (; i < dirList.length; i += 1) {
-    const fileName = dirList[i]
-    const tempPath = pathCli.resolve(cwd, fileName)
-    if (
-      !oralEslintPath &&
-      remarksName.includes(fileName) &&
-      isFileExists(tempPath)
-    ) {
-      oralEslintPath = tempPath
-      return
-    }
-  }
-
-  // 读取内容
-  let eslintContent = null
-  if (oralEslintPath) {
-    // eslint-disable-next-line import/no-dynamic-require
-    eslintContent = require(oralEslintPath)
-  } else {
-    // eslint-disable-next-line import/no-dynamic-require
-    eslintContent = require(pathCli.resolve(cwd, 'package.json')).eslintConfig
-  }
-  // if all eslint config not exist, create .eslintrc.js file
-  eslintContent = {} as IEslintConfig
-
-  // package settings handle
-  if (!eslintContent.settings || typeof eslintContent.settings !== 'object') {
-    eslintContent.settings = {}
-  }
-  const { settings } = eslintContent
-  if (!settings['import/resolver']) {
-    settings['import/resolver'] = {}
-  }
-  settings['import/resolver'] = {
-    webpack: {
-      config: 'node_modules/@vue/cli-service/webpack.config.js'
-    }
-  }
-
-  // package extends handle
-  const extendEslint = Array.isArray(eslintContent.extends)
-    ? eslintContent.extends
-    : []
-  const extendPlugins: { name: string; toIndex: number; fromIndex?: number }[] =
-    [
-      { name: 'airbnb-base', toIndex: 0 },
-      {
-        name: 'prettier',
-        toIndex: extendEslint.length === 0 ? 1 : extendEslint.length - 1
-      }
-    ]
-  if (extendEslint.length === 0) {
-    extendEslint.push('airbnb-base')
-    extendEslint.push('prettier')
-  } else {
-    extendPlugins.forEach(({ name }, key) => {
-      const localIndex = extendEslint.indexOf(name)
-      extendPlugins[key].fromIndex = localIndex
-    })
-    extendPlugins.forEach((item) => {
-      const { name, toIndex, fromIndex } = item
-      if (toIndex === fromIndex) {
-        return
-      }
-      extendEslint.splice(fromIndex!, 1)
-      extendEslint.splice(toIndex, 0, name)
-    })
-  }
-  eslintContent.extends = Object.assign([], extendEslint)
 }
 
 // cli 执行入口
@@ -144,26 +39,17 @@ const cliHandle = async (options: { preset: string; tool: string }) => {
     }
   })
 
-  // husky文件处理
-  const huskyPath: string = pathCli.resolve(cwd, '.husky')
-  if (!isDirExists(huskyPath)) {
-    const fromPath = pathCli.resolve(__dirname, './cli-template', '.husky')
-    await fileMove(fromPath, huskyPath)
-  }
-
-  // .eslintrc.js handle
-  console.log(
-    chalkCli.yellow(
-      `warning: eslint config support the suffix is js json, and package.json`
-    )
-  )
+  // husky file handle
+  await huskyHandle()
 
   // eslintrc.js/json handle
-  eslintConfigHandle()
+  eslintConfigHandle({
+    importResolver: !options.preset.includes('rollup')
+  })
 
-  // commitlint.config.js handle
+  // commitlint.config.js handle TODO
   const commitlintPath = pathCli.resolve(cwd, 'commitlint.config.js')
-  assignPathWriteFile(
+  fsUtils.wContent(
     commitlintPath,
     `
     module.exports = { extends: ["@commitlint/config-angular"] };
@@ -192,13 +78,13 @@ const cliHandle = async (options: { preset: string; tool: string }) => {
 
   // package setting init-staged
   packageJson['lint-staged'] = {
-    'src/**/*.{js,vue.ts}': ['yarn lint']
+    'src/**/*.{js,vue,ts}': ['yarn lint']
   }
-  assignPathWriteFile(packagePath, packageJson)
+  fsUtils.wContent(packagePath, packageJson)
 
   // .prettierrc.js handle
   const prettierrcPath = pathCli.resolve(cwd, '.prettierrc.js')
-  assignPathWriteFile(
+  fsUtils.wContent(
     prettierrcPath,
     `
     module.exports = {
@@ -212,7 +98,7 @@ const cliHandle = async (options: { preset: string; tool: string }) => {
   console.log(chalkCli.yellow(`success: eslint dependency setting success`))
 
   // exec install
-  runCommand(options.tool, ['install']).then(() => {
+  processUtils.runCommand(options.tool, ['install']).then(() => {
     console.log(chalkCli.cyan('yarn lint'))
   })
 }
