@@ -1,6 +1,6 @@
 {
   "name": "auto-eslint-cli",
-  "version": "2.0.1",
+  "version": "2.1.5",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
@@ -29,7 +29,7 @@
     "@rollup/plugin-node-resolve": "^13.0.4",
     "@rollup/plugin-typescript": "^8.2.5",
     "@types/inquirer": "^7.3.3",
-    "@types/node": "^16.7.2",
+    "@types/node": "^16.7.10",
     "@typescript-eslint/parser": "^4.29.3",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
@@ -51,6 +51,7 @@
     ]
   },
   "dependencies": {
+    "@babel/runtime": "^7.15.3",
     "chalk": "^4.1.2",
     "commander": "^8.1.0",
     "node-extra": "^2.0.3",
