@@ -26,7 +26,16 @@ const defaultPresets: IDefaultPresets = {
   },
   'rollup + ts': {
     value: 'rollup&ts',
-    plugins: []
+    plugins: [
+      { plugin: '@commitlint/cli', version: '^13.1.0' },
+      { plugin: '@commitlint/config-angular', version: '^13.1.0' },
+      { plugin: 'eslint-config-prettier', version: '^8.3.0' },
+      { plugin: 'husky', version: '^7.0.1' },
+      { plugin: 'lint-staged', version: '^11.1.2' },
+      { plugin: 'prettier', version: '^2.3.2' },
+      { plugin: 'eslint-plugin-import', version: '^2.24.1' },
+      { plugin: 'eslint-config-airbnb-base', version: '^14.2.1' }
+    ]
   }
 }
 

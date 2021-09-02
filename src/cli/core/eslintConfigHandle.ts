@@ -44,7 +44,6 @@ const eslintConfigHandle = (option?: IOptions) => {
       fsUtils.isFileExists(tempPath)
     ) {
       oralEslintPath = tempPath
-      return
     }
   }
 
@@ -59,7 +58,9 @@ const eslintConfigHandle = (option?: IOptions) => {
   }
   const allNotExist = !eslintContent
   // if all eslint config not exist, create .eslintrc.js file
-  eslintContent = {} as IEslintConfig
+  if (allNotExist) {
+    eslintContent = {} as IEslintConfig
+  }
 
   // package settings handle
   if (option?.importResolver) {
@@ -86,7 +87,7 @@ const eslintConfigHandle = (option?: IOptions) => {
       { name: 'airbnb-base', toIndex: 0 },
       {
         name: 'prettier',
-        toIndex: extendEslint.length === 0 ? 1 : extendEslint.length - 1
+        toIndex: extendEslint.length === 0 ? 1 : extendEslint.length + 1
       }
     ]
   if (extendEslint.length === 0) {
@@ -102,14 +103,33 @@ const eslintConfigHandle = (option?: IOptions) => {
       if (toIndex === fromIndex) {
         return
       }
-      extendEslint.splice(fromIndex!, 1)
+      if (fromIndex !== -1) {
+        extendEslint.splice(fromIndex!, 1)
+      }
       extendEslint.splice(toIndex, 0, name)
     })
+  }
+  const localIndex = extendEslint.indexOf('eslint:recommended')
+  if (localIndex !== -1) {
+    extendEslint.splice(localIndex, 1)
   }
   eslintContent.extends = Object.assign([], extendEslint)
 
   if (allNotExist) {
     fsUtils.wContent(path.resolve(cwd, '.eslintrc.json'), eslintContent)
+  }
+  if (oralEslintPath) {
+    if (oralEslintPath.endsWith('.json')) {
+      fsUtils.wContent(oralEslintPath, eslintContent)
+    } else {
+      const content = `module.exports = ${JSON.stringify(
+        eslintContent,
+        null,
+        2
+      )}
+      `
+      fsUtils.wContent(oralEslintPath, content, 0)
+    }
   }
 
   console.log(

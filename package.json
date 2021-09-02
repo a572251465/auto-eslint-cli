@@ -42,6 +42,7 @@
     "rollup": "^2.56.3",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-copy": "^3.4.0",
+    "rollup-plugin-terser": "^7.0.2",
     "typescript": "^4.3.5"
   },
   "lint-staged": {
@@ -52,7 +53,7 @@
   "dependencies": {
     "chalk": "^4.1.2",
     "commander": "^8.1.0",
-    "node-extra": "^2.0.2",
+    "node-extra": "^2.0.3",
     "progress": "^2.0.3",
     "prompts": "^2.4.1"
   }

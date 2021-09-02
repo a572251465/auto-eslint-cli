@@ -5,6 +5,7 @@ const commonjs = require('@rollup/plugin-commonjs')
 const json = require('@rollup/plugin-json')
 const { getBabelOutputPlugin } = require('@rollup/plugin-babel')
 const copy = require('rollup-plugin-copy')
+const { terser } = require('rollup-plugin-terser')
 
 const resolvePath = (url) => path.resolve(__dirname, url)
 
@@ -39,6 +40,7 @@ module.exports = {
     json(),
     copy({
       targets: [{ src: 'src/cli-template', dest: 'dist' }]
-    })
+    }),
+    terser()
   ]
 }

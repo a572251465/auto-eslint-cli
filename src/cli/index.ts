@@ -1,9 +1,13 @@
 const pathCli = require('path')
 const chalkCli = require('chalk')
-const { fs: fsUtils, process: processUtils } = require('node-extra')
+const fsCli = require('fs')
+const { process: processUtils } = require('node-extra')
 const defaultPresets = require('../cli-shared/presets.ts').default
 const huskyHandle = require('./core/husky.ts').default
 const eslintConfigHandle = require('./core/eslintConfigHandle.ts').default
+const commitlintHandle = require('./core/commitlint.ts').default
+const packageHandle = require('./core/packageHandle.ts').default
+const prettierrcHandle = require('./core/prettierrc.ts').default
 
 const transformPresets: { [keyName: string]: string } = {
   'vue3&ts&vue-cli': 'vue3 + ts/ vue-cli',
@@ -47,60 +51,26 @@ const cliHandle = async (options: { preset: string; tool: string }) => {
     importResolver: !options.preset.includes('rollup')
   })
 
-  // commitlint.config.js handle TODO
-  const commitlintPath = pathCli.resolve(cwd, 'commitlint.config.js')
-  fsUtils.wContent(
-    commitlintPath,
-    `
-    module.exports = { extends: ["@commitlint/config-angular"] };
-  `
-  )
+  // commitlint file cliHandle
+  commitlintHandle()
 
-  // package scripts and dependencies
-  // eslint-disable-next-line import/no-dynamic-require
-  const packageJson = require(packagePath)
-  if (!packageJson.scripts) {
-    packageJson.scripts = {}
-  }
-  packageJson.scripts = {
-    ...packageJson.scripts,
-    lint: 'eslint --ext .js,.ts,.vue . && prettier --check .',
-    'lint:fix': 'eslint --fix --ext .js,.ts,.vue . && prettier --write .',
-    prepare: 'husky install'
-  }
-  execPresets.forEach((item) => {
-    const { plugin, version, env } = item
-    if (!Reflect.has(packageJson, env)) {
-      packageJson[env] = {}
-    }
-    packageJson[env][plugin] = version
-  })
-
-  // package setting init-staged
-  packageJson['lint-staged'] = {
-    'src/**/*.{js,vue,ts}': ['yarn lint']
-  }
-  fsUtils.wContent(packagePath, packageJson)
+  // package file handle
+  packageHandle(execPresets, options.preset)
 
   // .prettierrc.js handle
-  const prettierrcPath = pathCli.resolve(cwd, '.prettierrc.js')
-  fsUtils.wContent(
-    prettierrcPath,
-    `
-    module.exports = {
-      "semi": false,
-      "singleQuote": true,
-      "trailingComma": "none",
-      "endOfLine": "lf"
-    };
-  `
-  )
+  prettierrcHandle()
   console.log(chalkCli.yellow(`success: eslint dependency setting success`))
 
   // exec install
-  processUtils.runCommand(options.tool, ['install']).then(() => {
-    console.log(chalkCli.cyan('yarn lint'))
-  })
+  const dirNames = fsCli.readdirSync(cwd) as string[]
+  processUtils
+    .runCommand(
+      options.tool,
+      ['install'].concat(dirNames.includes('lerna.json') ? ['-W'] : [])
+    )
+    .then(() => {
+      console.log(chalkCli.cyan('yarn lint'))
+    })
 }
 
 module.exports = cliHandle
