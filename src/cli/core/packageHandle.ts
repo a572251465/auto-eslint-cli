@@ -4,8 +4,21 @@ const fs = require('fs')
 
 const packagePath = path.resolve(process.cwd(), 'package.json')
 type IExecPresets = { plugin: string; version: string; env: string }[]
+interface ILanguageType {
+  // vue2版本生成
+  vue2: boolean
+  // vue3版本生成
+  vue3: boolean
+  // react生成
+  react: boolean
+  // rollup cli
+  rollupCli: boolean
+}
 
-const packageHandle = (execPresets: IExecPresets, preset: string) => {
+const packageHandle = (
+  execPresets: IExecPresets,
+  judgeLanguage: ILanguageType
+) => {
   // eslint-disable-next-line import/no-dynamic-require
   const packageJson = require(packagePath)
   if (!packageJson.scripts) {
@@ -27,7 +40,14 @@ const packageHandle = (execPresets: IExecPresets, preset: string) => {
   const dirNames = fs.readdirSync(process.cwd())
   const isLerna = dirNames.includes('lerna.json')
   const pathKey = isLerna ? 'packages' : 'src'
-  const suffixKey = preset.includes('vue') ? '{js,vue,ts}' : '{js,ts}'
+  const suffixArr: string[] = ['js', 'ts']
+  if (judgeLanguage.vue2 || judgeLanguage.vue3) {
+    suffixArr.push('vue')
+  }
+  if (judgeLanguage.react) {
+    suffixArr.push('jsx', 'tsx')
+  }
+  const suffixKey = `{${suffixArr.join(',')}}`
 
   // package setting init-staged
   packageJson['lint-staged'] = {

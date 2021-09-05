@@ -8,24 +8,35 @@ const eslintConfigHandle = require('./core/eslintConfigHandle.ts').default
 const commitlintHandle = require('./core/commitlint.ts').default
 const packageHandle = require('./core/packageHandle.ts').default
 const prettierrcHandle = require('./core/prettierrc.ts').default
+const judgeLanguageHandle = require('./core/judgeLanguage.ts').default
 
-const transformPresets: { [keyName: string]: string } = {
-  'vue3&ts&vue-cli': 'vue3 + ts/ vue-cli',
-  'rollup&ts': 'rollup + ts'
+interface ILanguageType {
+  // vue2版本生成
+  vue2: boolean
+  // vue3版本生成
+  vue3: boolean
+  // react生成
+  react: boolean
+  // rollup cli
+  rollupCli: boolean
 }
 
-// cli 执行入口
-const cliHandle = async (options: { preset: string; tool: string }) => {
+const cliHandle = async (options: {
+  tool: string
+  [keyName: string]: string
+}) => {
   const cwd = process.cwd()
-  const preset = transformPresets[options.preset]
   const packagePath = pathCli.resolve(cwd, 'package.json')
   // eslint-disable-next-line import/no-dynamic-require
   const pkContent = require(packagePath)
   const { devDependencies = {}, dependencies = {} } = pkContent
+  const isVite = !!devDependencies.vite || !!dependencies.vite
+
+  const judgeLanguage: ILanguageType = judgeLanguageHandle()
 
   // 设置执行的预设
   const execPresets: { plugin: string; version: string; env: string }[] = []
-  const plugins = defaultPresets[preset].plugins as {
+  const plugins = defaultPresets as {
     plugin: string
     version: string
     prefix: string
@@ -42,20 +53,26 @@ const cliHandle = async (options: { preset: string; tool: string }) => {
       execPresets.push({ plugin, version, env: 'dependencies' })
     }
   })
+  if (!judgeLanguage.vue3 || (judgeLanguage.vue3 && isVite)) {
+    const localIndex = execPresets.findIndex(
+      (item) => item.plugin === 'eslint-import-resolver-webpack'
+    )
+    execPresets.splice(localIndex, 1)
+  }
 
   // husky file handle
   await huskyHandle()
 
   // eslintrc.js/json handle
   eslintConfigHandle({
-    importResolver: !options.preset.includes('rollup')
+    importResolver: judgeLanguage.vue3 && !isVite
   })
 
   // commitlint file cliHandle
   commitlintHandle()
 
   // package file handle
-  packageHandle(execPresets, options.preset)
+  packageHandle(execPresets, judgeLanguage)
 
   // .prettierrc.js handle
   prettierrcHandle()

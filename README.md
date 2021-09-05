@@ -1,13 +1,13 @@
 # auto-eslint-cli
 At present, a set of submission specifications based on prettier + husky + commitlint has been implemented, which can realize one click deployment, and there is no need for eslint deployment
 
-## Support function
+## Support Range
 ------------------------------------------------
 ```
-1. vue3 + ts/ vue-cli
-  description: If your project is created with Vue CLII (V3), this option is undoubtedly the best choice when you need eslint
-2. rollup + ts
-  description: If you want to create a rollup related cli project or manage the project with lerna, you want to add eslint. This option is undoubtedly the best choice
+1. Vue2 project created using Vue cli 
+2. Vue3 project created using Vue cli
+3. react project created using Create React App
+4. Package gadgets using Rollup
 ```
 ## install
 ------------------------------------------------

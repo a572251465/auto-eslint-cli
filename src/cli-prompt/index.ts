@@ -1,6 +1,4 @@
 const prompts = require('prompts')
-
-const presets = require('../cli-shared/presets.ts').default
 const cli = require('../cli/index.ts')
 
 interface IPresets {
@@ -10,17 +8,14 @@ interface IPresets {
 
 // eslint-disable-next-line consistent-return
 const start = async (): Promise<any> => {
-  // 设置预设进行选择
-  const presetsList: IPresets[] = []
-  Object.keys(presets).forEach((preset) => {
-    const { value } = presets[preset]
-    presetsList.push({ title: preset, value })
-  })
   const presetPrompt = {
-    name: 'preset',
+    name: 'language',
     type: 'select',
-    message: 'Please pick a preset:',
-    choices: presetsList
+    message: 'Please select the relevant language:',
+    choices: [
+      { title: 'react', value: 'react' },
+      { title: 'vue', value: 'vue' }
+    ] as { title: string; value: string }[]
   }
   const features: IPresets[] = ['npm', 'yarn', 'cancel'].map((item) => ({
     title: item,

@@ -132,6 +132,14 @@ const eslintConfigHandle = (option?: IOptions) => {
     }
   }
 
+  // eslintignore
+  const fromPath = path.resolve(
+    __dirname,
+    './cli-template/ignore',
+    '.eslintignore'
+  )
+  fs.copyFileSync(fromPath, path.resolve(cwd, '.eslintignore'))
+
   console.log(
     chalk.yellow(
       `warning: eslint config support the suffix is js json, and package.json`
