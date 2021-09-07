@@ -7,7 +7,7 @@ At present, a set of submission specifications based on prettier + husky + commi
 1. Vue2 project created using Vue cli 
 2. Vue3 project created using Vue cli
 3. react project created using Create React App
-4. Package gadgets using Rollup
+4. ts/ js  If TS is selected, it may be just a gadget made with TS / JS
 ```
 ## install
 ------------------------------------------------
@@ -19,7 +19,14 @@ yarn add auto-eslint-cli -g
 ```
 // test -- Items to be set by eslint 
 $ cd test
+
+mode1:
 /test $ auto-eslint-cli init
+
+mode2:
+/test $ auto-eslint-cli init -y
+// This method allows quick setting and direct selection of default presets
+// default presets: vue + npm
 ```
 ## Contact me
 [GitHub](https://github.com/a572251465/auto-eslint-cli)

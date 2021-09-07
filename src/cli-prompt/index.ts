@@ -14,7 +14,8 @@ const start = async (): Promise<any> => {
     message: 'Please select the relevant language:',
     choices: [
       { title: 'vue', value: 'vue' },
-      { title: 'react', value: 'react' }
+      { title: 'react', value: 'react' },
+      { title: 'ts/js', value: 'ts/js' }
     ] as { title: string; value: string }[]
   };
   const features: IPresets[] = ['npm', 'yarn', 'cancel'].map((item) => ({
@@ -27,6 +28,7 @@ const start = async (): Promise<any> => {
     message: 'Please eslint init tool:',
     choices: features
   };
+  console.log('If TS is selected, it may be just a gadget made with TS / JS');
   const options = await prompts([presetPrompt, featurePrompt]);
   if (options.tool === 'cancel') {
     return Promise.reject(new Error('init close'));
