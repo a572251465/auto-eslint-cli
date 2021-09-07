@@ -15,4 +15,4 @@ module.exports = {
     'import/no-dynamic-require': 'off',
     strict: 'off'
   }
-}
+};

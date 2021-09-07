@@ -1,7 +1,7 @@
 interface IPresets {
-  plugin: string
-  version: string
-  prefix?: string
+  plugin: string;
+  version: string;
+  prefix?: string;
 }
 const defaultPresets: IPresets[] = [
   { plugin: '@commitlint/cli', version: '^13.1.0', prefix: '^13' },
@@ -18,6 +18,6 @@ const defaultPresets: IPresets[] = [
   { plugin: 'prettier', version: '^2.3.2', prefix: '^2' },
   { plugin: 'eslint-plugin-import', version: '^2.24.1', prefix: '^2' },
   { plugin: 'eslint-config-airbnb-base', version: '^14.2.1', prefix: '^14' }
-]
+];
 
-export default defaultPresets
+export default defaultPresets;
