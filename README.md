@@ -29,6 +29,10 @@ At present, a set of submission specifications based on prettier + husky + commi
 3. npx auto-eslint-cli init
     1. 通过npx的方式直接部署，不需要全局安装
 ```
+## Recommended use (推荐使用)
+```
+npx auto-eslint-cli init -y/ npx auto-eslint-cli init
+```
 ## install
 ------------------------------------------------
 ```
