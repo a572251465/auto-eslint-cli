@@ -1,6 +1,12 @@
 # auto-eslint-cli
 At present, a set of submission specifications based on prettier + husky + commitlint has been implemented, which can realize one click deployment, and there is no need for eslint deployment
 
+## Important!!! Important!!! Important!!!
+```
+This tool must run in the following directory of the project
+此工具必须运行在项目的根目录下
+```
+
 ## Reasons for choosing auto-eslint-cli
 ```
 1. Realize one click Automated Deployment
