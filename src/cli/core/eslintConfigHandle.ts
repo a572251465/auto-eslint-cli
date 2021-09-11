@@ -26,10 +26,11 @@ type ITransform<T> = {
 type IEslintConfig = ITransform<IEslintConfigInit>;
 interface IOptions {
   importResolver: boolean;
+  absolutePath: string;
 }
 
-const eslintConfigHandle = (option?: IOptions) => {
-  const cwd = process.cwd();
+const eslintConfigHandle = (option: IOptions) => {
+  const cwd = option.absolutePath;
   let oralEslintPath = null;
   const remarksName = ['.eslintrc.js', '.eslintrc.json'];
 
@@ -38,11 +39,7 @@ const eslintConfigHandle = (option?: IOptions) => {
   for (; i < dirList.length; i += 1) {
     const fileName = dirList[i];
     const tempPath = path.resolve(cwd, fileName);
-    if (
-      !oralEslintPath &&
-      remarksName.includes(fileName) &&
-      fsUtils.isFileExists(tempPath)
-    ) {
+    if (!oralEslintPath && remarksName.includes(fileName) && fsUtils.isFileExists(tempPath)) {
       oralEslintPath = tempPath;
     }
   }
@@ -79,17 +76,14 @@ const eslintConfigHandle = (option?: IOptions) => {
   }
 
   // package extends handle
-  const extendEslint = Array.isArray(eslintContent.extends)
-    ? eslintContent.extends
-    : [];
-  const extendPlugins: { name: string; toIndex: number; fromIndex?: number }[] =
-    [
-      { name: 'airbnb-base', toIndex: 0 },
-      {
-        name: 'prettier',
-        toIndex: extendEslint.length === 0 ? 1 : extendEslint.length + 1
-      }
-    ];
+  const extendEslint = Array.isArray(eslintContent.extends) ? eslintContent.extends : [];
+  const extendPlugins: { name: string; toIndex: number; fromIndex?: number }[] = [
+    { name: 'airbnb-base', toIndex: 0 },
+    {
+      name: 'prettier',
+      toIndex: extendEslint.length === 0 ? 1 : extendEslint.length + 1
+    }
+  ];
   if (extendEslint.length === 0) {
     extendEslint.push('airbnb-base');
     extendEslint.push('prettier');
@@ -118,33 +112,23 @@ const eslintConfigHandle = (option?: IOptions) => {
   if (allNotExist) {
     fsUtils.wContent(path.resolve(cwd, '.eslintrc.json'), eslintContent);
   }
+
+  // content write
   if (oralEslintPath) {
     if (oralEslintPath.endsWith('.json')) {
       fsUtils.wContent(oralEslintPath, eslintContent);
     } else {
-      const content = `module.exports = ${JSON.stringify(
-        eslintContent,
-        null,
-        2
-      )}
+      const content = `module.exports = ${JSON.stringify(eslintContent, null, 2)}
       `;
       fsUtils.wContent(oralEslintPath, content, 0);
     }
   }
 
   // eslintignore
-  const fromPath = path.resolve(
-    __dirname,
-    './cli-template/ignore',
-    '.eslintignore'
-  );
+  const fromPath = path.resolve(__dirname, './cli-template/ignore', '.eslintignore');
   fs.copyFileSync(fromPath, path.resolve(cwd, '.eslintignore'));
 
-  console.log(
-    chalk.yellow(
-      `warning: eslint config support the suffix is js json, and package.json`
-    )
-  );
+  console.log(chalk.yellow(`warning: eslint config support the suffix is js json, and package.json`));
 };
 
 export default eslintConfigHandle;

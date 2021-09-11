@@ -1,8 +1,9 @@
 {
   "editor.fontWeight": "bold",
-  "editor.letterSpacing": 1.6,
+  "editor.letterSpacing": 1,
   "editor.fontSize": 13,
   "editor.lineHeight": 1.7,
   "editor.tabSize": 2,
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "editor.minimap.maxColumn": 20
 }

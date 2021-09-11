@@ -2,7 +2,6 @@ const path = require('path');
 const { fs: fsUtils } = require('node-extra');
 const fs = require('fs');
 
-const packagePath = path.resolve(process.cwd(), 'package.json');
 type IExecPresets = { plugin: string; version: string; env: string }[];
 interface ILanguageType {
   // vue2版本生成
@@ -15,11 +14,17 @@ interface ILanguageType {
   rollupCli: boolean;
 }
 
-const packageHandle = (
-  execPresets: IExecPresets,
-  judgeLanguage: ILanguageType
-) => {
+interface IPackageOptions {
+  execPresets: IExecPresets;
+  judgeLanguage: ILanguageType;
+  lintStagedSuffix: string;
+  absolutePath: string;
+  surplusPath: string;
+}
+const packageHandle = (params: IPackageOptions) => {
+  const { execPresets, judgeLanguage, lintStagedSuffix, absolutePath } = params;
   // eslint-disable-next-line import/no-dynamic-require
+  const packagePath = path.resolve(params.absolutePath, 'package.json');
   const packageJson = require(packagePath);
   if (!packageJson.scripts) {
     packageJson.scripts = {};
@@ -37,7 +42,7 @@ const packageHandle = (
     packageJson[env][plugin] = version;
   });
 
-  const dirNames = fs.readdirSync(process.cwd());
+  const dirNames = fs.readdirSync(absolutePath);
   const isLerna = dirNames.includes('lerna.json');
   const pathKey = isLerna ? 'packages' : 'src';
   const suffixArr: string[] = ['js', 'ts'];
@@ -50,9 +55,17 @@ const packageHandle = (
   const suffixKey = `{${suffixArr.join(',')}}`;
 
   // package setting init-staged
-  packageJson['lint-staged'] = {
-    [`${pathKey}/**/*.${suffixKey}`]: ['yarn lint']
-  };
+  if (lintStagedSuffix === '.json') {
+    packageJson['lint-staged'] = {
+      [`${pathKey}/**/*.${suffixKey}`]: ['yarn lint']
+    };
+  } else {
+    const content = require(path.resolve(__dirname, './cli-template/lintstagedrc.js'))({
+      suffixKey,
+      surplusPath: params.surplusPath
+    });
+    fsUtils.wContent(path.resolve(absolutePath, '.lintstagedrc.js'), content);
+  }
   fsUtils.wContent(packagePath, packageJson);
 };
 

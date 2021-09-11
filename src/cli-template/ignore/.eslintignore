@@ -1,2 +1,4 @@
 /dist
 /node_modules
+.lintstagedrc.js
+/**/*/lintstagedrc.js

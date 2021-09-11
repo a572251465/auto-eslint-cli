@@ -10,21 +10,18 @@ interface ILanguageType {
   // rollup cli
   rollupCli: boolean;
 }
-const cwd = process.cwd();
-const judgeLanguage = (): ILanguageType => {
+const judgeLanguage = (absolutePath: string): ILanguageType => {
   const languageTypes: ILanguageType = {
     vue2: false,
     vue3: false,
     react: false,
     rollupCli: false
   };
-  const packagePath = path.resolve(cwd, 'package.json');
+  const packagePath = path.resolve(absolutePath, 'package.json');
   const { dependencies = {}, devDependencies = {} } = require(packagePath);
   if (dependencies.vue || devDependencies.vue) {
     const edition = dependencies.vue || devDependencies.vue;
-    languageTypes[
-      edition.startsWith('^3') || edition.startsWith('3') ? 'vue3' : 'vue2'
-    ] = true;
+    languageTypes[edition.startsWith('^3') || edition.startsWith('3') ? 'vue3' : 'vue2'] = true;
     return languageTypes;
   }
 

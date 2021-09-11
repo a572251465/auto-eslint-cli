@@ -2,8 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const { fs: fsUtils } = require('node-extra');
 
-const prettierrcHandle = () => {
-  const prettierrcPath = path.resolve(process.cwd(), '.prettierrc.js');
+const prettierrcHandle = (absolutePath: string) => {
+  const prettierrcPath = path.resolve(absolutePath, '.prettierrc.js');
   fsUtils.wContent(
     prettierrcPath,
     `module.exports = {
@@ -14,12 +14,8 @@ const prettierrcHandle = () => {
     };`
   );
 
-  const fromPath = path.resolve(
-    __dirname,
-    './cli-template/ignore',
-    '.prettierignore'
-  );
-  fs.copyFileSync(fromPath, path.resolve(process.cwd(), '.prettierignore'));
+  const fromPath = path.resolve(__dirname, './cli-template/ignore', '.prettierignore');
+  fs.copyFileSync(fromPath, path.resolve(absolutePath, '.prettierignore'));
 };
 
 export default prettierrcHandle;
