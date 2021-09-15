@@ -4,8 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint --ext .js,.ts . && prettier --check .",
-    "lint:fix": "eslint --fix --ext .ts,.js . && prettier --write .",
+    "lint": "eslint --ext .js,.ts,.vue . && prettier --check .",
+    "lint:fix": "eslint --fix --ext .js,.ts,.vue . && prettier --write .",
     "build": "rollup -c ./builds/rollup.config.js"
   },
   "bin": {
