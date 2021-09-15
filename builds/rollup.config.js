@@ -1,13 +1,13 @@
-const path = require('path');
-const { nodeResolve } = require('@rollup/plugin-node-resolve');
-const typescript = require('@rollup/plugin-typescript');
-const commonjs = require('@rollup/plugin-commonjs');
-const json = require('@rollup/plugin-json');
-const { getBabelOutputPlugin } = require('@rollup/plugin-babel');
-const copy = require('rollup-plugin-copy');
-const { terser } = require('rollup-plugin-terser');
+const path = require('path')
+const { nodeResolve } = require('@rollup/plugin-node-resolve')
+const typescript = require('@rollup/plugin-typescript')
+const commonjs = require('@rollup/plugin-commonjs')
+const json = require('@rollup/plugin-json')
+const { getBabelOutputPlugin } = require('@rollup/plugin-babel')
+const copy = require('rollup-plugin-copy')
+const { terser } = require('rollup-plugin-terser')
 
-const resolvePath = (url) => path.resolve(__dirname, url);
+const resolvePath = (url) => path.resolve(__dirname, url)
 
 module.exports = {
   input: resolvePath('../src/index.ts'),
@@ -43,4 +43,4 @@ module.exports = {
     }),
     terser()
   ]
-};
+}

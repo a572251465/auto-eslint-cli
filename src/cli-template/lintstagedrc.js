@@ -1,4 +1,6 @@
-const lintstagedContent = (options = {}) => `// eslint-disable-next-line import/no-extraneous-dependencies
+const lintstagedContent = (
+  options = {}
+) => `// eslint-disable-next-line import/no-extraneous-dependencies
 const lintStaged = require('lint-staged');
 const path = require('path');
 
@@ -35,5 +37,5 @@ async function startLinting() {
 }
 
 startLinting();
-  `;
-module.exports = lintstagedContent;
+  `
+module.exports = lintstagedContent
