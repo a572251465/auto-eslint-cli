@@ -1,6 +1,6 @@
 {
   "name": "auto-eslint-cli",
-  "version": "2.1.5",
+  "version": "2.1.1",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
@@ -58,6 +58,14 @@
     "progress": "^2.0.3",
     "prompts": "^2.4.1"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/a572251465/auto-eslint-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/a572251465/auto-eslint-cli/issues"
+  },
+  "homepage": "https://github.com/a572251465/auto-eslint-cli",
   "keywords": [
     "eslint",
     "auto",
