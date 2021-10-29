@@ -26,10 +26,11 @@ type ITransform<T> = {
 type IEslintConfig = ITransform<IEslintConfigInit>
 interface IOptions {
   importResolver: boolean
+  absolutePath: string
 }
 
-const eslintConfigHandle = (option?: IOptions) => {
-  const cwd = process.cwd()
+const eslintConfigHandle = (option: IOptions) => {
+  const cwd = option.absolutePath
   let oralEslintPath = null
   const remarksName = ['.eslintrc.js', '.eslintrc.json']
 
@@ -118,6 +119,8 @@ const eslintConfigHandle = (option?: IOptions) => {
   if (allNotExist) {
     fsUtils.wContent(path.resolve(cwd, '.eslintrc.json'), eslintContent)
   }
+
+  // content write
   if (oralEslintPath) {
     if (oralEslintPath.endsWith('.json')) {
       fsUtils.wContent(oralEslintPath, eslintContent)
@@ -131,6 +134,14 @@ const eslintConfigHandle = (option?: IOptions) => {
       fsUtils.wContent(oralEslintPath, content, 0)
     }
   }
+
+  // eslintignore
+  const fromPath = path.resolve(
+    __dirname,
+    './cli-template/ignore',
+    '.eslintignore'
+  )
+  fs.copyFileSync(fromPath, path.resolve(cwd, '.eslintignore'))
 
   console.log(
     chalk.yellow(

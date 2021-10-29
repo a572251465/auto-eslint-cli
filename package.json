@@ -1,11 +1,11 @@
 {
   "name": "auto-eslint-cli",
-  "version": "2.1.1",
+  "version": "4.2.10",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint --ext .js,.ts . && prettier --check .",
-    "lint:fix": "eslint --fix --ext .ts,.js . && prettier --write .",
+    "lint": "eslint --ext .js,.ts,.vue . && prettier --check .",
+    "lint:fix": "eslint --fix --ext .js,.ts,.vue . && prettier --write .",
     "build": "rollup -c ./builds/rollup.config.js"
   },
   "bin": {
@@ -54,7 +54,7 @@
     "@babel/runtime": "^7.15.3",
     "chalk": "^4.1.2",
     "commander": "^8.1.0",
-    "node-extra": "^2.0.3",
+    "node-extra": "^2.1.3",
     "progress": "^2.0.3",
     "prompts": "^2.4.1"
   },
