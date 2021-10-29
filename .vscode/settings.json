@@ -1,8 +1,15 @@
 {
+  "editor.formatOnSave": true,
   "editor.fontWeight": "bold",
-  "editor.letterSpacing": 1.6,
-  "editor.fontSize": 15.5,
-  "editor.lineHeight": 1.7,
+  "editor.letterSpacing": 0.5,
+  "editor.lineHeight": 1.5,
+  "editor.fontSize": 12,
+  "editor.fontFamily": "Consolas, 'Courier New', monospace",
   "editor.tabSize": 2,
-  "editor.formatOnSave": true
+  "prettier.printWidth": 120,
+  "prettier.semi": false,
+  "prettier.singleQuote": true,
+  "prettier.trailingComma": "none",
+  "prettier.jsxBracketSameLine": true,
+  "terminal.integrated.fontSize": 12
 }
